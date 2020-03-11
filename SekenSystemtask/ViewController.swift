@@ -9,16 +9,18 @@
 import UIKit
 import SwiftyJSON
 import Kingfisher
-import GoogleMaps
+import MapKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, MKMapViewDelegate {
      var restarentArray = [restarent]()
-
+    @IBOutlet weak var locationsMaps: MKMapView!
     @IBOutlet weak var restarentCollectionView: UICollectionView!
+    var restarentsArray = [AnyObject]()
+  var selectedAnnotation: MKPointAnnotation?
+    var selectLocation: Double?
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        
+     
    getRequest()
     }
     
@@ -34,13 +36,31 @@ class ViewController: UIViewController {
             data, response, error in
             //Connection failed case
                 do{
-                    let jsonResult: Any = (try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers))
-                    
-                    print(jsonResult)
+                    let jsonResult: Any = (try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableContainers))               
                         let responseDictionary = jsonResult as! [String:AnyObject]
-                        
                 if let DictionariesArray = responseDictionary["restaurants"] as? [AnyObject] {
-                            self.restarentArray = DictionariesArray.map({return restarent(json: JSON($0))})
+                    self.restarentsArray = DictionariesArray
+//                            self.restarentArray = DictionariesArray.map({return restarent(json: JSON($0))})
+                    for restarent in self.restarentsArray {
+                        
+                        let location = restarent.object(forKey: "location") as? AnyObject
+                        let annotaion = MKPointAnnotation()
+//                        annotaion.title = location?.object(forKey: "city") as? String
+                        annotaion.title = location?.object(forKey: "city") as? String
+                        annotaion.coordinate = CLLocationCoordinate2D(latitude: location?.object(forKey: "lat") as! CLLocationDegrees, longitude: location?.object(forKey: "lng") as! CLLocationDegrees)
+                        print(annotaion.coordinate)
+                        self.locationsMaps.addAnnotation(annotaion)
+                        
+                    }
+//                    for restarent in self.restarentArray {
+//                        print(self.restarentArray.count)
+//                               for location in restarent.locationArray {
+//                                   let annotaion = MKPointAnnotation()
+//                                   annotaion.title = location.city
+//                                   annotaion.coordinate = CLLocationCoordinate2D(latitude: location.lat as! CLLocationDegrees, longitude: location.lng as! CLLocationDegrees)
+//                                self.locationsMaps.addAnnotation(annotaion)
+//                               }
+//                           }
                     DispatchQueue.main.sync {
                                 self.restarentCollectionView.reloadData()
                     }
@@ -55,6 +75,42 @@ class ViewController: UIViewController {
                 }
         }
         task.resume()
+    }
+    /*
+      let point = CGPoint(x: 0, y: 0)
+     if point.y >= 0{
+         self.injuredTableView.setContentOffset(point, animated: true)
+     }
+
+     */
+   
+    func scrollToSelect(index:Int)
+    {
+      
+        self.restarentCollectionView.scrollToItem(at: IndexPath(item: index, section: 0), at: .right, animated: true)
+    }
+    
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView)
+    {
+        self.selectedAnnotation = view.annotation as? MKPointAnnotation
+        print(selectedAnnotation?.coordinate.latitude)
+        selectLocation = selectedAnnotation?.coordinate.latitude
+        selectedLocation()
+    }
+    func selectedLocation()
+    {
+        for i in 0..<restarentsArray.count
+        {
+            let restarent = restarentsArray[i]
+            let location = restarent.object(forKey: "location") as? AnyObject
+            let latValue = location?.object(forKey: "lat") as? Double
+            if selectLocation == latValue {
+                scrollToSelect(index: i)
+            
+            }
+          
+        }
+        
     }
 /*
     func getApiCall() {
@@ -102,8 +158,8 @@ class ViewController: UIViewController {
 }
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(restarentArray.count)
-    return restarentArray.count
+     
+    return restarentsArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -111,17 +167,23 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource{
         let userImage = cell.contentView.viewWithTag(10) as! UIImageView
         let name = cell.contentView.viewWithTag(11) as! UILabel
         let category = cell.contentView.viewWithTag(12) as! UILabel
-        
-        name.text = restarentArray[indexPath.row].name
-        category.text = restarentArray[indexPath.row].category
+        name.text = restarentsArray[indexPath.row].object(forKey: "name") as? String
+        category.text = restarentsArray[indexPath.row].object(forKey: "category") as? String
+//        name.text = restarentArray[indexPath.row].name
+//        category.text = restarentArray[indexPath.row].category
         
         userImage.kf.indicatorType = .activity
-        userImage.kf.setImage(with:NSURL(string: restarentArray[indexPath.row].backgroundImageURL) as URL? , placeholder: #imageLiteral(resourceName: "Offers"), options: [.transition(ImageTransition.fade(1))], progressBlock: { (receivedSize, totalSize) in
-        }) { (image, error, cacheType, imageURL) in
-        }
+//        userImage.kf.setImage(with:NSURL(string: restarentArray[indexPath.row].backgroundImageURL) as URL? , placeholder: #imageLiteral(resourceName: "Offers"), options: [.transition(ImageTransition.fade(1))], progressBlock: { (receivedSize, totalSize) in
+//        }) { (image, error, cacheType, imageURL) in
+//        }
+        userImage.kf.setImage(with:NSURL(string: (restarentsArray[indexPath.row].object(forKey: "backgroundImageURL") as? String)!) as URL? , placeholder: #imageLiteral(resourceName: "Offers"), options: [.transition(ImageTransition.fade(1))], progressBlock: { (receivedSize, totalSize) in
+                }) { (image, error, cacheType, imageURL) in
+                }
         
         return cell
     }
+    
+
     
     
 }
