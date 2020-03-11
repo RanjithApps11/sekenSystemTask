@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,13 +16,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bOO-JL-mwK" customClass="GMSMapView">
-                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="kjJ-N1-oTf">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="7Cz-PQ-p53"/>
+                                </connections>
+                            </mapView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Y6x-RR-E43">
                                 <rect key="frame" x="10" y="487" width="375" height="170"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="170" id="vSw-i9-U7w"/>
                                 </constraints>
@@ -70,6 +70,7 @@
                                                 </stackView>
                                             </subviews>
                                         </view>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="hmx-EU-Wwj" firstAttribute="leading" secondItem="G5K-xu-ZeK" secondAttribute="leading" id="91e-5k-yth"/>
                                             <constraint firstItem="7er-An-spd" firstAttribute="leading" secondItem="G5K-xu-ZeK" secondAttribute="leading" constant="10" id="D9Z-bp-Ou5"/>
@@ -100,17 +101,18 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="bOO-JL-mwK" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="0dK-3O-D0b"/>
-                            <constraint firstItem="bOO-JL-mwK" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="9BN-lp-122"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="bOO-JL-mwK" secondAttribute="trailing" id="9pk-A3-0dN"/>
+                            <constraint firstItem="kjJ-N1-oTf" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="6KW-1F-5EO"/>
+                            <constraint firstItem="kjJ-N1-oTf" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="OG2-Vc-BNA"/>
+                            <constraint firstItem="kjJ-N1-oTf" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Xmd-aF-Pup"/>
                             <constraint firstItem="Y6x-RR-E43" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="Yfu-ZN-z7J"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="bOO-JL-mwK" secondAttribute="bottom" id="kXF-ic-tNL"/>
+                            <constraint firstItem="kjJ-N1-oTf" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="dji-ux-cZk"/>
                             <constraint firstItem="Y6x-RR-E43" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="10" id="meI-MB-f8L"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Y6x-RR-E43" secondAttribute="bottom" constant="10" id="zWf-DD-Gyn"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="locationsMaps" destination="kjJ-N1-oTf" id="alD-DL-jsA"/>
                         <outlet property="restarentCollectionView" destination="Y6x-RR-E43" id="SeM-vi-u1o"/>
                     </connections>
                 </viewController>
